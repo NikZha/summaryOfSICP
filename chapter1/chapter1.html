@@ -46,6 +46,7 @@
                         <li><a href="#chap122">1.2.2. Древовидная рекурсия</a></li>
                         <li><a href="#task111">Упражнение 1.11.</a></li>
                         <li><a href="#chap123">1.2.3. Порядки роста</a></li>
+                        <li><a href="#chap124">1.2.4. Возведение в степень</a></li>
                     </ul>
                 </li>
             </ul>
@@ -445,6 +446,54 @@ console.log(fact(100000))
     <div class="topic" id="chap123">
         <h3>1.2.3. Порядки роста</h3>
         <p>Тут автор даёт информацию об <code>O(n)</code>, как об оценке времени выполнения и памяти.</p>
+    </div>
+    <div class="topic" id="chap124">
+        <h3>1.2.4. Возведение в степень</h3>
+        <p>Цель топика показать, что одна и та же процедура можно занимать линейное время, как например процедура
+            возведения в степень через рекурсивную формулу:</p>
+        <pre><code class="lang">
+; bn = b bn−1
+; b0 = 1 
+(define (expt b n)
+  (if (= n 0)
+    1
+    (* b (expt b (- n 1)))))               
+            </code></pre>
+        <p>Оценка времени <code>O(n)</code>, оценка памяти <code>O(n)</code>.</p>
+        <p>Через итеративную процедуру с оценкой времени <code>O(n)</code> и оценкой памяти <code>O(1)</code>:</p>
+        <pre><code class="language-scheme">
+(define (expt b n)
+  (expt-iter b n 1))
+
+(define (expt-iter b counter product)
+  (if (= counter 0)
+    product
+    (expt-iter b
+      (- counter 1)
+      (* b product))))        
+    </code></pre>
+        <p>Оценка памяти тут такая потому, что в scheme есть поддержка оптимизации рекурсии, где этого нет, там будет
+            O(n).</p>
+        <p>Однако автор предлагает улучшить эту процедуру за счет:</p>
+        <pre><code>
+b2 = b * b
+b4 = b2 * b2
+b8 = b4 * b4            
+        </code></pre>
+        <pre><code class="lang">
+(define (fast-expt b n)
+  (cond ((= n 0) 1)
+    ((even? n) (square (fast-expt b (/ n 2))))
+    (else (* b (fast-expt b (- n 1))))))
+
+(define (square x)
+  (* x x))
+
+(define (even? n)
+  (= (remainder n 2) 0))
+        </code></pre>
+        <p>Таким образом сложность по времени будет <code>Olog(n)</code>, что существенно быстрее чем <code>O(n)</code>
+            на больших числах.</p>
     </div>
 
 </body>
