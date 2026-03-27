@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Глава 1. ПОСТРОЕНИЕ АБСТРАКЦИЙ С ПОМОЩЬЮ ПРОЦЕДУР</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.7.0/styles/github.min.css">
+    <script src="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.7.0/languages/scheme.min.js"></script>
+    <script>hljs.highlightAll();</script>
+    <script defer src="../scripts.js"></script>
+</head>
+
+<body>
+    <div class="contents">
+        <h2><a href="#chap1">Глава 1. ПОСТРОЕНИЕ АБСТРАКЦИЙ С ПОМОЩЬЮ ПРОЦЕДУР</a></h2>
+        <h3>
+            <ul>
+                <li><a href="#chap11">1.1. Элементы програмирования</a>
+                    <ul>
+                        <li><a href="#chap111">1.1.1. Выражения</a></li>
+                        <li><a href="#chap112">1.1.2. Имена и окружение</a></li>
+                        <li><a href="#chap113">1.1.3. Вычисление комбинаций</a></li>
+                        <li><a href="#chap114">1.1.4. Составные процедуры</a></li>
+                        <li><a href="#chap115">1.1.5. Подстановочная модель применения процедуры</a></li>
+                        <li><a href="#chap116">1.1.6. Условные выражения и предикаты</a></li>
+                        <li><a href="#chap117">1.1.7. Пример: вычисление квадратного корня методом Ньютона</a></li>
+                        <li><a href="#chap118">1.1.8. Процедуры как абстракции типа «черный ящик»</a></li>
+                        <li><a href="#tasks">Упражнения</a>
+                            <ul>
+                                <li><a href="#task11">Упражнение 1.1</a></li>
+                                <li><a href="#task12">Упражнение 1.2</a></li>
+                                <li><a href="#task13">Упражнение 1.3</a></li>
+                                <li><a href="#task14">Упражнение 1.4</a></li>
+                                <li><a href="#task16">Упражнение 1.6.</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li><a href="#chap12">1.2. Процедуры и порождаемые ими процессы</a>
+                    <ul>
+                        <li><a href="#chap121">1.2.1. Линейные рекурсия и итерация</a></li>
+                        <li><a href="#task110">Упражнение 1.10.</a></li>
+                        <li><a href="#chap122">1.2.2. Древовидная рекурсия</a></li>
+                        <li><a href="#task111">Упражнение 1.11.</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </h3>
+    </div>
+    <div class="topic" id="chap1">
+        <h2>ПОСТРОЕНИЕ АБСТРАКЦИЙ С ПОМОЩЬЮ ПРОЦЕДУР</h2>
+        <p>Тут сообщаются общие сведения о Лиспе, как языке созданного в лохматые года для задачи ИИ. Так же говорится о
+            том, что лисп это интерпретируемый язык.</p>
+    </div>
+    <div class="topic" id="chap11">
+        <h3>1.1. Элементы програмирования</h3>
+        <p>Чтобы комбировать простое в сложное язык програмирования содержит:</p>
+        <ul>
+            <li>Элементарные выражения, представляющие собой минимальные сущности с которыми язык имеет дело. Читай
+                например типы даных (String, Integer и так далее).</li>
+            <li>Средства комбинирования, с помощью которых из простых элементов составляются сложные. Например структуры
+                имеющие несколько полей разного типа.</li>
+            <li>Средства абстракции, с помощью которых сложные объекты можно обзывать и работать с ними как с единым
+                целым. Например наследование и классы.
+            </li>
+        </ul>
+        <p>Далее он пишет, что от ЯП требуются средства комбинирования данных и процедур - то бишь создание объектов.
+        </p>
+    </div>
+    <div class="topic" id="chap111">
+        <h3>1.1.1. Выражения</h3>
+        <p>На интерпретатор подаются <code>выражения</code>, а он в ответ выдаёт резутаты <code>вычисления</code>
+            поданного выражения. Выражением может быть, как число так и какое-либо арифметическое выражение.
+            По крайней мере эти выражения задействуются в этой подглаве.</p>
+        <p>Так же в этой подглаве даётся понятие записи выражения в лиспах и в схеме в частности, например</p>
+        <pre><code class="language-scheme">
+(- 10 2)
+        </code></pre>
+        <p>Что значит <code>10 - 2</code>, так же они могут быть с вложенными скобами:</p>
+        <pre><code class="language-scheme">
+(* (- 10 8) (+ 1 4))
+        </code></pre>
+    </div>
+    <div class="topic" id="chap112">
+        <h3>1.1.2. Имена и окружение</h3>
+        <p>Оператор присваивания в scheme <code>define</code> позволяет задавать значение не только переменных, но и
+            функций. Например:</p>
+        <pre><code class="language-scheme">
+(define pi 3.14)
+(define radius 10)
+(define circumference (* 2 pi radius))                
+            </code></pre>
+    </div>
+    <div class="topic" id="chap113">
+        <h3>1.1.3. Вычисление комбинаций</h3>
+        <p>Вычисление подобного рода комбинаций происходит по принципу древовидной структруры, где ниже лежает листья
+            самые левые:</p>
+        <pre><code class="language-scheme">
+(* (+ 2 (* 4 6))
+(+ 3 5 7))            
+        </code></pre>
+    </div>
+    <div class="topic" id="chap114">
+        <h3>1.1.4. Составные процедуры</h3>
+        <p>До этого мы рассматривали в лиспе (автор имеет в виду, то что диалект лиспа - схема):</p>
+        <ul>
+            <li>Числа и арифметические операции представляющие собой элементарные данные и процедуры.</li>
+            <li>Вложение комбинаций дающее возможность комбинировать операции.</li>
+            <li>Объявление переменных.</li>
+        </ul>
+        <p>Похожим образом объявляются процедуры (функции), например:</p>
+        <pre><code class="language-scheme">
+(define (square x) (* x x))            
+        </code></pre>
+        <p>Чтобы запустить процедуру на выполнение надо написать в интерпретаторе:</p>
+        <pre><code class="language-scheme">
+(square 10)            
+        </code></pre>
+        <p>Естественно, что процедуры можно комбинировать друг с другом:</p>
+        <pre><code class="language-scheme">
+(define (sum of squares x y)
+(+ (square x) (square y)))
+
+(define (f a)
+(sum of squares (+ a 1) (* a 2)))
+        </code></pre>
+    </div>
+    <div class="topic" id="chap115">
+        <h3>1.1.5. Подстановочная модель применения процедуры</h3>
+        <p>В топике показывает в обучающих целях, как происходит подстановка.</p>
+    </div>
+    <div class="topic" id="chap116">
+        <h3>1.1.6. Условные выражения и предикаты</h3>
+        <p>Тут автор(ы) на примере языка scheme знакомят нас с условиями и предикатами:</p>
+        <div id="cond">
+            <h3>cond</h3>
+            <p>На примере модуля числа мелкая функция на примере <code>cond</code>:</p>
+            <pre><code class="language-scheme">
+(define (abs x)
+    (cond ((&lt; x 0) print (- x))
+        (else (print x))))                
+            </code></pre>
+        </div>
+        <div id="if">
+            <h3>if</h3>
+            <p>Тоже самое на основе <code>if</code>:
+            </p>
+            <pre><code class="language-scheme">
+(define (abs1 x)
+    (if (&lt; x 0)
+        (print (- x))
+        (print x)))                
+            </code></pre>
+        </div>
+        <div id="and">
+            <h3>and, or, not</h3>
+            <p>Другие логические операнды позволяющие сделать выбор:</p>
+            <pre><code class="language-scheme">
+(define (more5 x)
+    ((and (&lt; 5 x) (> 10 x))))   
+    
+(define (>= x y)
+    (or (> x y) (= x y)))
+
+(define (>= x y)
+    (not (&lt; x y)))
+            </code></pre>
+        </div>
+    </div>
+    <div class="topic" id="tasks">
+        <h3>Упражнения</h3>
+        <div id="task11">
+            <h4>Упраженение 1.1</h4>
+            <p>Упражение это не так просто как кажется: там надо посчитать вывод интерпретатора и иметь в виду 2
+                переменные a и b, их определение:</p>
+            <pre><code class="language-scheme">
+(define a 3)
+(define b (+ a 1))                    
+                </code></pre>
+            <p>И дальнейшие манипуляции с ними:</p>
+            <pre><code class="language-scheme">
+(+ a b (* a b))
+; 19
+
+(= a b)
+;false     
+
+(if (and (> b a) (&lt; b (* a b)))
+    b
+    a)            
+; b или 4
+
+(cond ((= a 4) 6)
+    ((= b 4) (+ 6 7 a))
+    (else 25))
+;Тут выдаётся первое true условие
+;то есть 16 так как b = 4.
+
+(+ 2 (if (> b a) b a))
+; 6
+
+(* (cond ((> a b) a)
+        ((&lt; a b) b)
+        (else 1))
+    (+ a 1))
+; 16
+                </code></pre>
+            <p>Комментариями даны ответы.</p>
+        </div>
+        <div id="task12">
+            <h4>Упражнение 1.2</h4>
+            <p>Решение:</p>
+            <pre><code class="language-scheme">
+(/ (+ 5 4 (- 2 (- 3 (+ 6 4/5)))) (* 3 (- 6 2) (- 2 7)))   
+;; -74/300             
+            </code></pre>
+        </div>
+        <div id="task13">
+            <h4>Упражнение 1.3.</h4>
+            <p>Моё решение:</p>
+            <pre><code class="language-scheme">
+(define (sumsqrt x y)
+    (+ (* x x) (* y y)))
+
+(define (retsq a b c)
+    (cond ((> a b c) (sumsqrt a b)) 
+          ((> a c b) (sumsqrt a c))  
+          ((> b a c) (sumsqrt b a))  
+          ((> b c a) (sumsqrt b c))   
+          ((> c a b) (sumsqrt c a))
+          ((> c b a) (sumsqrt c b))   
+        ))                
+            </code></pre>
+            <p>Deepseek говорит, что в нём нет проверки на равенство, реализация проверки на несколько аргументов
+                <code>(> a b c)</code> и через чур много проверок, сам использует <code>max</code>:
+            </p>
+            <pre><code class="language-scheme">
+(define (sum-of-squares x y)
+    (+ (* x x) (* y y)))
+
+(define (sum-squares-of-two-largest a b c)
+    (cond ((and (>= a b) (>= a c))   ; a — одно из двух бóльших
+           (sum-of-squares a (max b c)))
+          ((and (>= b a) (>= b c))   ; b — одно из двух бóльших
+           (sum-of-squares b (max a c)))
+          (else                       ; значит, c — одно из двух бóльших
+           (sum-of-squares c (max a b)))))                
+            </code></pre>
+        </div>
+        <div id="task14">
+            <h4>Упражнение 1.4.</h4>
+            <p>Я правильно понимаю, что в этой ф-ции:</p>
+            <pre><code class="language-scheme">
+(define (a-plus-abs-b a b)
+  ((if (> b 0) + -) a b))                
+            </code></pre>
+            <p>if возвращает плюс или минус в зависимости от знака b. Поскольку в scheme <code>- + \ *</code>
+                представляют собой функции.</p>
+        </div>
+    </div>
+    <div class="topic" id="chap117">
+        <h3>1.1.7. Пример: вычисление квадратного корня методом Ньютона</h3>
+        <p>Авторы исходя из их языка <a href="sqrt-iter.scm">предлагают</a> процедуру поиска путём рекурсии. Которая по
+            пути дёргает ещё несколько функций. </p>
+        <p>Сам метод состоит в том, чтобы взять единицу, разделить на x - для получения приближение, потом выяснить
+            частное, найти между ним и x среднее. Приравнять его к приближению вместо единицы и далее продолжить.
+            <a href="sqrt-iter.js">Итеративное</a> решение первая ф-ция. Далее я перенес решение из книги на js.
+        </p>
+    </div>
+    <div class="topic" id="task16">
+        <h3>Упражнение 1.6.</h3>
+        <p>Скрипт из книги зависает. Дипсик объясняет потому что:</p>
+        <ul>
+            <li>Аппликативный порядок вычисления (все аргументы вычисляются до вызова) — это основа Scheme</li>
+            <li><code>if</code> нарушает это правило ради практичности</li>
+            <li>Нельзя просто так взять и определить свой <code>if</code> через обычную процедуру </li>
+        </ul>
+        <pre><code class="language-scheme">
+; Упражнение 1.6.
+
+(define (new-if predicate then-clause else-clause)
+  (cond (predicate then-clause)
+    (else else-clause)))
+
+(new-if (= 2 3) 0 5)
+
+(define (sqrt-iteri guess x)
+  (new-if (goodenough? guess x)
+    guess
+    (sqrt-iteri (improve guess x)
+      x)))            
+        </code></pre>
+    </div>
+    <div class="topic" id="chap117">
+        <h3>1.1.8. Процедуры как абстракции типа «черный ящик»</h3>
+        <p>В топике даётся понимание процедуры как "чёрного ящика", то есть пользователя не должно волновать, как
+            процедура функционирует внутри. Так же внутренние переменные процедуры не должны никак влиять на её
+            использование. А так же даётся понятие блочной структуры на примере упаковки всех процедур в одну:</p>
+        <pre><code class="language-scheme">
+(define (sqrt x)
+  (define (good-enough? guess)
+    (&lt; (abs (- (* guess guess) x)) 0.001))
+  (define (improve guess)
+    (average guess (/ x guess)))
+  (define (average x y)
+    (/ (+ x y) 2))
+  (define (sqrt-iter guess)
+    (if (good-enough? guess)
+      guess
+      (sqrt-iter (improve guess))))
+  (sqrt-iter 1.0))
+             
+            </code></pre>
+    </div>
+    <div class="topic" id="chap12">
+        <h3>1.2. Процедуры и порождаемые ими процессы</h3>
+        <p>Процедура представляет собой шаблон локальной эволюции (local evolution) вычис
+            лительного процесса. Она указывает, как следующая стадия процесса строится из преды
+            дущей. </p>
+        <p>Далее он собирается рассмотреть как процессы используют время и память.</p>
+        <div id="chap121">
+            <h3>1.2.1. Линейные рекурсия и итерация</h3>
+            <p>Показывает как стём разворачивается и сворачивается на примере факторила 6:</p>
+            <pre><code class="language-scheme">
+(define (factorial n)
+  (if (= n 0)
+    1
+    (* n (factorial (- n 1)))))                
+            </code></pre>
+            <p>Однако автор приводит пример по форме рекурсивного, а по сути итеративной функции:</p>
+            <pre><code class="language-scheme">
+(define (factorial n)
+  (fact-iter 1 1 n))
+
+(define (fact-iter product counter max-count)
+  (if (> counter max-count)
+    product
+    (fact-iter (* counter product)
+      (+ counter 1)
+      max-count)))
+
+(print (factorial 100000))            
+        </code></pre>
+            <p>Даже такой огромный пример scheme высчитывает благодаря оптимизации хвостовой рекурсии. Что делает этот
+                пример итеративным. Однако такой же пример написанный на js приводит к падению, поскольку в js это
+                рекурсия:</p>
+            <pre><code class="language-js">
+function fact(n) {
+  return factIter(1, 1, n)
+}
+
+function factIter(product, counter, maxCount) {
+    if(counter > maxCount) return product;
+    return factIter(counter*product, ++counter, maxCount)
+}
+
+console.log(fact(100000))                    
+                </code></pre>
+            <p>Поддержка отимизации хвостовой рекурсии есть в стандарте ES6, но по факту существует только в сафари.</p>
+        </div>
+        <div id="task110">
+            <h4>Упражнение 1.10.</h4>
+            <pre><code class="language-scheme">
+(define (A x y)
+  (cond ((= y 0) 0)
+        ((= x 0) (* 2 y))
+        ((= y 1) 2)
+        (else (A (- x 1)
+                 (A x (- y 1))))))
+
+(A 1 10)   ; быстро — 1024
+(A 2 4)    ; ещё быстро — 65536
+(A 3 3)    ; уже 65536
+(A 3 4)    ; 2^65536 - 3 — компьютер зависнет
+(A 4 1)    ; 2 — маленькая, но (A 4 2) уже убьёт интерпретатор                
+            </code></pre>
+            <p>Это одна из тех функций, которые выглядят безобидно, но на деле показывают, что рекурсия может порождать
+                не просто линейный или экспоненциальный рост, а нечто за пределами воображения.</p>
+        </div>
+        <div id="chap122">
+            <h3>1.2.2. Древовидная рекурсия</h3>
+            <p>Древовидную рекурсию дают на примере чисел фибоначи:</p>
+            <pre><code class="language-scheme">
+(define (fib n)
+  (cond ((= n 0) 0)
+    ((= n 1) 1)
+    (else (+ (fib (- n 1))
+        (fib (- n 2))))))
+            </code></pre>
+            <p>Само дерево вызовов понятно какое. </p>
+            <pre><code class="lang">
+                    fib 5
+                   /     \
+              fib 4       fib 3
+             /    \       /    \
+         fib 3   fib 2  fib 2  fib 1
+        /    \   /   \  /   \
+    fib 2  fib1 fib1 fib0 fib1 fib0
+    /   \
+ fib1 fib0    
+</code></pre>
+            <p>Интерпретатор scheme не оптимизирован для такого и потому вызов
+                функции на небольших аргументах - проблема. Потому автор даёт сразу итеративный вариант в стиле
+                рекурсивного варианта:</p>
+            <pre><code class="language-scheme">
+(define (fib1 n)
+  (fib-iter 1 0 n))
+
+(define (fib-iter a b count)
+  (if (= count 0)
+    b
+    (fib-iter (+ a b) a (- count 1))))                    
+                </code></pre>
+            <p>Сами исходные файлы scheme и js <a href="./fib/">находятся в каталоге.</a></p>
+            <p>Далее по топику идёт пример о размене монет, но я его не осиливал.</p>
+        </div>
+        <div id="task111">
+            <h4>Упражнение 1.11.</h4>
+            <p>Рекурсивная реализация:</p>
+            <pre><code class="language-scheme">
+(define (task111 n)
+    (if (&lt; n 3)
+    n
+    (+ (task111 (- n 1)) (task111 (- n 2)) (task111 (- n 3)))))                
+            </code></pre>
+            <p>Рекурсивную реализацию по крайней мере на <code>scheme</code> я не осилил, только на js относительно
+                самостоятельно и то с подсказкой
+                deepseek:</p>
+            <pre><code class="language-scheme">
+(define A 4)
+
+(define (task111Dinamic a b c n)
+  (if (&lt n 3)
+    a
+    (task111Dinamic (+ a b c) a b (- n 1))))
+
+(print (task111Dinamic 2 1 0 A))
+            </code></pre>
+        </div>
+    </div>
+
+</body>
+
+</html>

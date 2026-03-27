@@ -1,0 +1,30 @@
+;; готовый скрипт для выполнения csi.exe -script .\exmpl1.scm
+(define pi 3.14)
+(define radius 10)
+(define circumference (* 2 pi radius))
+(print circumference)
+
+;; 1.1.6
+(define (abs x)
+  (cond ((< x 0) print (- x))
+    (else (print x))))
+
+(define (abs1 x)
+  (if (< x 0)
+    (print (- x))
+    (print x)))
+
+
+(define (more5 x)
+  ((and (< 5 x) (> 10 x))))
+
+(define a 3)
+
+(define b (+ a 1))
+(cond ((= a 4) 6)
+  ((= b 4) (+ 6 7 a))
+  (else 25))
+
+;;упражнение 1.2
+
+(/ (+ 5 4 (- 2 (- 3 (+ 6 4/5)))) (* 3 (- 6 2) (- 2 7)))
