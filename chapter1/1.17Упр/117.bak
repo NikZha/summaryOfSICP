@@ -1,0 +1,6 @@
+(define (dived n x)
+    (if (= x 0)
+    n
+    (+ n (dived(n (- x 1))))))
+
+(print (dived 2 2))
