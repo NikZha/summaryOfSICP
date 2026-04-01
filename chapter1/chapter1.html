@@ -602,6 +602,68 @@ console.log(isPrime(971))
             </details>
             <p>Таким образом сложность по времени <code>O(&radic;n)</code></p>
         </div>
+        <div id="testFerma">
+            <h4>Тест Ферма</h4>
+            <blockquote>
+                <strong>Малая теорема Ферма:</strong>
+                <p>Если <span class="handmade">n</span> — простое число, а <span class="handmade">a</span> —
+                    произвольное целое число меньше, чем <span class="handmade">n</span>, то
+                    <span class="handmade">a</span>, возведенное в <span class="handmade">n-ю</span> степень, равно
+                    <span class="handmade">a</span> по модулю <span class="handmade">n</span>.
+                </p>
+            </blockquote>
+            <p>Переводя эту абракадабру на русский язык если <span class="handmade">n</span> простое число, то любое
+                число
+                его меньшее возведённое в степень <span class="handmade">n</span> и поделенное на <span
+                    class="handmade">n</span> в остатке от деления даст само себя. Проиллюстрировать можно кодом:</p>
+            <pre><code class="language-js">
+function testFerma(n) {
+    for (let a = 0; a &lt; n; a++) {
+        // Используем BigInt для точных вычислений
+        const pow = BigInt(a) ** BigInt(n);
+        const remainder = Number(pow % BigInt(n));
+
+        if (remainder === a) {
+            console.log(`✓ ${a}^${n} mod ${n} = ${remainder} == ${a}`);
+        } else {
+            console.log(`✗ ${a}^${n} mod ${n} = ${remainder} != ${a}`);
+        }
+    }
+}                    
+                </code></pre>
+            <p>Авторы же дают процедуру возведения в степень и деления с остатком на временной сложности
+                <code>Θ(log n)</code>:
+            </p>
+            <pre><code class="language-scheme">
+(define (square x)
+    (* x x))
+
+(define (expmod base exp m)
+  (cond ((= exp 0) 1)
+    ((even? exp)
+      (remainder (square (expmod base (/ exp 2) m))
+        m))
+    (else
+      (remainder (* base (expmod base (- exp 1) m))
+        m))))                    
+                </code></pre>
+            <p>В которой <code>base</code> это число больше 0 и меньше проверяемого простого числа, а <code>exp</code> и
+                <code>m</code> это и есть проверяемое простое число. Смысл работы процедуры состоит в том, что стек
+                растёт до момента пока <code>exp</code> не окажется равным 0, а потом начинает сворачиваться выполняя
+                соотвествующие арифметические действия.
+            </p>
+            <p>Для удобства пользования ф-цией вводится ф-ция обёртка, в которой берётся рандомно число меньше чем
+                загаданное и тестируется:</p>
+            <pre><code class="language-scheme">
+(import (chicken random))
+
+(define (fermat-test n)
+  (define (try-it a)
+    (= (expmod a n n) a))
+  (try-it (+ 1 (pseudo-random-integer (- n 1)))))
+                </code></pre>
+            <p>Ф-ция рандома импортируется в данном случае из chiken.</p>
+        </div>
     </div>
 
 </body>

@@ -68,3 +68,13 @@ blockquote {
 .startbutton {
     cursor: pointer;
 }
+
+.handmade {
+    font-family: 'Segoe UI', 'Times New Roman', cursive;
+    font-style: italic;
+    /* классический курсив для переменных */
+    font-weight: 500;
+    /* чуть жирнее, чтобы выделялось */
+    white-space: nowrap;
+    /* чтобы a^n не разрывалось на две строки */
+}
