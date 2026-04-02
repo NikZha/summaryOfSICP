@@ -17,4 +17,9 @@
     (= (expmod a n n) a))
   (try-it (+ 1 (pseudo-random-integer (- n 1)))))
 
-(fermat-test 7)
+(define (fast-prime? n times)
+  (cond ((= times 0) (print #t))
+    ((fermat-test n) (fast-prime? n (- times 1)))
+    (else (print #f))))
+
+(fast-prime? 2621 9)

@@ -663,6 +663,15 @@ function testFerma(n) {
   (try-it (+ 1 (pseudo-random-integer (- n 1)))))
                 </code></pre>
             <p>Ф-ция рандома импортируется в данном случае из chiken.</p>
+            <p>Так же авторы предлагают пользоваться тестирование несколько раз:</p>
+            <pre><code class="language-scheme">
+(define (fast-prime? n times)
+  (cond ((= times 0) (print #t))
+    ((fermat-test n) (fast-prime? n (- times 1)))
+    (else (print #f))))                
+            </code></pre>
+            <p>Необходимость тестирования несколько раз связана с тем, что может попасться число соответствующее условию
+                теоремы ферма для какого-то <span class="handmade">a</span>, но не являющееся простым числом.</p>
         </div>
     </div>
 
