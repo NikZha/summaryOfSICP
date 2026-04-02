@@ -50,6 +50,7 @@
                         <li><a href="#chap125">1.2.5. Нахождение наибольшего общего делителя</a></li>
                         <li><a href="#task120">Упражнение 1.20.</a></li>
                         <li><a href="#chapt126">1.2.6. Пример: проверка на простоту</a></li>
+                        <li><a href="#task121">Упражнение 1.21.</a></li>
                     </ul>
                 </li>
             </ul>
@@ -673,6 +674,63 @@ function testFerma(n) {
             <p>Необходимость тестирования несколько раз связана с тем, что может попасться число соответствующее условию
                 теоремы ферма для какого-то <span class="handmade">a</span>, но не являющееся простым числом.</p>
         </div>
+    </div>
+    <div class="topic" id="task121">
+        <h3>Упражнение 1.21.</h3>
+        <p>Минимальные делители:</p>
+        <ul>
+            <li>199 - 199</li>
+            <li>1999 - 1999</li>
+            <li>19999 - 7</li>
+        </ul>
+    </div>
+    <div class="topic" id="task122">
+        <h3>Упражнение 1.22.</h3>
+        <p>Полный код для запуска в chiken:</p>
+        <details>
+            <summary class="startbutton">Кликните для того, чтобы развернуть</summary>
+            <pre><code class="language-scheme">
+(import (chicken time))
+
+(define (smallest-divisor n)
+  (find-divisor n 2))
+
+(define (square x)
+  (* x x))
+
+(define (find-divisor n test-divisor)
+  (cond ((> (square test-divisor) n) n)
+    ((divides? test-divisor n) test-divisor)
+    (else (find-divisor n (+ test-divisor 1)))))
+
+(define (divides? a b)
+  (= (remainder b a) 0))
+
+(define (prime? n)
+  (= n (smallest-divisor n)))
+
+
+(define (timed-prime-test n)
+  (newline)
+  (display n)
+  (start-prime-test n (current-milliseconds)))
+
+(define (start-prime-test n start-time)
+  (if (prime? n)
+    (report-prime (- (current-milliseconds) start-time))))
+
+(define (report-prime elapsed-time)
+  (display " *** ")
+  (display elapsed-time))
+
+(define (search-for-primes n)
+  (if (not (even? n)) (timed-prime-test n))
+  (if (&lt; 2 n) (search-for-primes (- n 1))))
+
+(search-for-primes 1000000)
+                
+            </code></pre>
+        </details>
     </div>
 
 </body>
