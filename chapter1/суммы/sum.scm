@@ -12,11 +12,19 @@
       (sum term (next a) next b))))
 
 (define (cube x)
-    (* x x x))
+  (* x x x))
 
 (define (inc n) (+ n 1))
 
 (define (sum-cubes a b)
   (sum cube a inc b))
 
-(display (sum-cubes 1 10))
+(lambda (x) (+ x 4))
+
+(lambda (x) (/ 1.0 (* x (+ x 2))))
+
+(define (pi-sum a b)
+  (sum (lambda (x) (/ 1.0 (* x (+ x 2))))
+    a
+    (lambda (x) (+ x 4))
+    b))

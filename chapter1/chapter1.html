@@ -58,6 +58,7 @@
                         высших порядков</a>
                     <ul>
                         <li><a href="#chap131">1.3.1. Процедуры в качестве аргументов</a></li>
+                        <li><a href="#chap132">1.3.2. Построение процедур с помощью <code>lambda</code></a></li>
                     </ul>
                 </li>
             </ul>
@@ -792,6 +793,23 @@ function testFerma(n) {
 
 (define (sum-cubes a b)
   (sum cube a inc b))                
+            </code></pre>
+        </div>
+        <div id="chap132">
+            <h3>1.3.2. Построение процедур с помощью lambda</h3>
+            <p><code>lambda</code> позволяет создать формальную процедуру не именую её:</p>
+            <pre><code class="language-scheme">
+(lambda (x) (+ x 4))
+
+(lambda (x) (/ 1.0 (* x (+ x 2))))                
+            </code></pre>
+            <p>Что позволяет впихнуть её в качестве аргумента внутрь вызываемой процедуры:</p>
+            <pre><code class="language-scheme">
+(define (pi-sum a b)
+  (sum (lambda (x) (/ 1.0 (* x (+ x 2))))
+    a
+    (lambda (x) (+ x 4))
+    b))                
             </code></pre>
         </div>
     </div>
